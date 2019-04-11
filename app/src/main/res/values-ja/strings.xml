@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">にこにこめんどろいど</string>
+    <string name="please_live_id">生放送ID（lv～）を入力してください。</string>
+    <string name="live_id">生放送ID</string>
+    <string name="getComment">コメント取得</string>
+    <string name="error">問題が発生しました</string>
+    <string name="commentList">コメント一覧</string>
+    <string name="action_settings">設定</string>
+</resources>
