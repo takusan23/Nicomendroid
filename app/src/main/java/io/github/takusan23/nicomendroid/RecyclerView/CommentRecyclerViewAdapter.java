@@ -7,15 +7,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
+import io.github.takusan23.nicomendroid.Fragment.GiftFragment;
 import io.github.takusan23.nicomendroid.JSONParse.CommentJSONParse;
+import io.github.takusan23.nicomendroid.JSONParse.GiftJSONParse;
 import io.github.takusan23.nicomendroid.R;
 
 public class CommentRecyclerViewAdapter extends RecyclerView.Adapter<CommentRecyclerViewAdapter.ViewHolder> {
 
     private ArrayList<ArrayList> itemList;
+    private String mode = "";
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -28,8 +33,10 @@ public class CommentRecyclerViewAdapter extends RecyclerView.Adapter<CommentRecy
             text_TextView = itemView.findViewById(R.id.adapter_text);
         }
     }
-    public CommentRecyclerViewAdapter(ArrayList<ArrayList> arrayList){
+
+    public CommentRecyclerViewAdapter(ArrayList<ArrayList> arrayList, String mode) {
         this.itemList = arrayList;
+       this.mode=mode;
     }
 
     @NonNull
@@ -43,10 +50,16 @@ public class CommentRecyclerViewAdapter extends RecyclerView.Adapter<CommentRecy
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
         //UI
-        ArrayList<String> item= itemList.get(i);
-        CommentJSONParse api = new CommentJSONParse(item.get(0));
-        viewHolder.text_TextView.setText(api.getText());
-        viewHolder.username_TextView.setText(api.getPremium());
+        ArrayList<String> item = itemList.get(i);
+        if (mode.contains("gift")) {
+            GiftJSONParse api = new GiftJSONParse(item.get(0));
+            viewHolder.text_TextView.setText(api.getItem_name());
+            viewHolder.username_TextView.setText(api.getUser_name());
+        } else if (mode.contains("comment")) {
+            CommentJSONParse api = new CommentJSONParse(viewHolder.text_TextView.getContext(), item.get(0));
+            viewHolder.username_TextView.setText(api.getPremium() + "\n" + api.getUserId());
+            viewHolder.text_TextView.setText(api.getText());
+        }
     }
 
     @Override

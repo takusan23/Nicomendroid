@@ -8,6 +8,10 @@
             android:id="@+id/menu_commentList"
             android:icon="@drawable/ic_chat_black_24dp"
             android:title="@string/commentList" />
+        <item
+            android:id="@+id/menu_giftList"
+            android:icon="@drawable/ic_card_giftcard_black_24dp"
+            android:title="@string/gift" />
     </group>
 
 </menu>

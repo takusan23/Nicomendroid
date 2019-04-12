@@ -15,4 +15,11 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="loading">Loading</string>
+    <string name="end">end</string>
+    <string name="premium_account">Premium Membership</string>
+    <string name="general_account">General Membership</string>
+    <string name="management">Management</string>
+    <string name="id_activity">Broadcast ID Input</string>
+    <string name="gift">Gift History</string>
 </resources>

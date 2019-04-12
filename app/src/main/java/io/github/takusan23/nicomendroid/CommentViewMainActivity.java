@@ -17,15 +17,21 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import io.github.takusan23.nicomendroid.Fragment.CommentFragment;
+import io.github.takusan23.nicomendroid.Fragment.GiftFragment;
 
 public class CommentViewMainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    private Toolbar toolbar;
+    private static String liveId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_comment_view_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        //生放送ID
+        liveId = getIntent().getStringExtra("id");
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -41,12 +47,7 @@ public class CommentViewMainActivity extends AppCompatActivity
         if (getIntent().getStringExtra("fragment").equals("comment_list")) {
             //情報を渡す
             Bundle bundle = new Bundle();
-            bundle.putString("url", getIntent().getStringExtra("url"));
-            bundle.putString("version", getIntent().getStringExtra("version"));
-            bundle.putString("service", getIntent().getStringExtra("service"));
-            bundle.putString("chat", getIntent().getStringExtra("chat"));
-            bundle.putString("control", getIntent().getStringExtra("control"));
-            bundle.putString("store", getIntent().getStringExtra("store"));
+            bundle.putString("response", getIntent().getStringExtra("response"));
             CommentFragment commentFragment = new CommentFragment();
             commentFragment.setArguments(bundle);
             rePlaceFragment(commentFragment);
@@ -91,8 +92,21 @@ public class CommentViewMainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+        Bundle bundle = new Bundle();
         switch (id) {
             case R.id.menu_commentList:
+                //情報を渡す
+                bundle.putString("response", getIntent().getStringExtra("response"));
+                CommentFragment commentFragment = new CommentFragment();
+                commentFragment.setArguments(bundle);
+                rePlaceFragment(commentFragment);
+                break;
+            case R.id.menu_giftList:
+                //情報を渡す
+                bundle.putString("id", liveId);
+                GiftFragment giftFragment = new GiftFragment();
+                giftFragment.setArguments(bundle);
+                rePlaceFragment(giftFragment);
                 break;
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -109,5 +123,13 @@ public class CommentViewMainActivity extends AppCompatActivity
         //置き換え
         fragmentTransaction.replace(R.id.fragment_area, fragment);
         fragmentTransaction.commit();
+    }
+
+    public Toolbar getToolbar() {
+        return toolbar;
+    }
+
+    public static String getLiveId() {
+        return liveId;
     }
 }

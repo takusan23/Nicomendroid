@@ -6,4 +6,11 @@
     <string name="error">問題が発生しました</string>
     <string name="commentList">コメント一覧</string>
     <string name="action_settings">設定</string>
+    <string name="loading">読み込み中</string>
+    <string name="end">終了</string>
+    <string name="premium_account">プレ垢</string>
+    <string name="general_account">一般</string>
+    <string name="management">運コメ</string>
+    <string name="id_activity">生放送ID入力</string>
+    <string name="gift">ギフト履歴</string>
 </resources>
