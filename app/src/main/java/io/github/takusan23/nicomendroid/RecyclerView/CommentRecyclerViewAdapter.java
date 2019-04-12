@@ -10,6 +10,7 @@ import android.widget.TextView;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
+import io.github.takusan23.nicomendroid.JSONParse.CommentJSONParse;
 import io.github.takusan23.nicomendroid.R;
 
 public class CommentRecyclerViewAdapter extends RecyclerView.Adapter<CommentRecyclerViewAdapter.ViewHolder> {
@@ -43,8 +44,9 @@ public class CommentRecyclerViewAdapter extends RecyclerView.Adapter<CommentRecy
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
         //UI
         ArrayList<String> item= itemList.get(i);
-
-
+        CommentJSONParse api = new CommentJSONParse(item.get(0));
+        viewHolder.text_TextView.setText(api.getText());
+        viewHolder.username_TextView.setText(api.getPremium());
     }
 
     @Override

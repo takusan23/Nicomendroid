@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,11 +25,13 @@ import org.json.JSONObject;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 import io.github.takusan23.nicomendroid.R;
+import io.github.takusan23.nicomendroid.RecyclerView.CommentRecyclerViewAdapter;
 import okhttp3.WebSocket;
 
 /**
@@ -35,8 +39,10 @@ import okhttp3.WebSocket;
  */
 public class CommentFragment extends Fragment {
     View view;
-    TextView textView;
+    RecyclerView recyclerView;
     private WebSocketClient webSocketClient;
+    private ArrayList<ArrayList> recyclerViewList;
+    private RecyclerView.LayoutManager recyclerViewLayoutManager;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -50,7 +56,17 @@ public class CommentFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        textView = view.findViewById(R.id.comment_view_textview);
+        recyclerViewList = new ArrayList<>();
+
+        recyclerView = view.findViewById(R.id.comment_recycler_view);
+        //ここから下三行必須
+        recyclerView.setHasFixedSize(true);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
+        recyclerView.setLayoutManager(mLayoutManager);
+        CommentRecyclerViewAdapter customMenuRecyclerViewAdapter = new CommentRecyclerViewAdapter(recyclerViewList);
+        recyclerView.setAdapter(customMenuRecyclerViewAdapter);
+        recyclerViewLayoutManager = recyclerView.getLayoutManager();
+
         //WebSocket
         setConnetCommendWebSocket();
     }
@@ -90,12 +106,35 @@ public class CommentFragment extends Fragment {
 
                 @Override
                 public void onMessage(String message) {
-                    //TextViewに入れる
+                    //追加
+                    ArrayList<String> item = new ArrayList<>();
+                    item.add(message);
+                    recyclerViewList.add(item);
+                    System.out.println(message);
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            textView.append(message);
-                            textView.append("\n");
+                            if (((LinearLayoutManager) recyclerViewLayoutManager) != null) {
+                                // 画面上で最上部に表示されているビューのポジションとTopを記録しておく
+                                int pos = ((LinearLayoutManager) recyclerViewLayoutManager).findFirstVisibleItemPosition();
+                                int top = 0;
+                                if (((LinearLayoutManager) recyclerViewLayoutManager).getChildCount() > 0) {
+                                    top = ((LinearLayoutManager) recyclerViewLayoutManager).getChildAt(0).getTop();
+                                }
+                                CommentRecyclerViewAdapter customMenuRecyclerViewAdapter = new CommentRecyclerViewAdapter(recyclerViewList);
+                                recyclerView.setAdapter(customMenuRecyclerViewAdapter);
+                                //一番上なら追いかける
+                                if (pos == 0) {
+                                    recyclerView.post(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            recyclerView.smoothScrollToPosition(0);
+                                        }
+                                    });
+                                } else {
+                                    ((LinearLayoutManager) recyclerViewLayoutManager).scrollToPositionWithOffset(pos + 1, top);
+                                }
+                            }
                         }
                     });
                 }
