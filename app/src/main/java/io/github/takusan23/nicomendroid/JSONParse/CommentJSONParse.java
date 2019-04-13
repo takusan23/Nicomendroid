@@ -18,6 +18,7 @@ public class CommentJSONParse {
     private String mail = "";
     private String date = "";
     private String mobileData = "";
+    private String commentNumber;
 
     public CommentJSONParse(Context context, String response_string) {
         //this.response_string = response_string;
@@ -53,6 +54,10 @@ public class CommentJSONParse {
         return mobileData;
     }
 
+    public String getCommentNumber() {
+        return commentNumber;
+    }
+
     /**
      * JSONパース
      */
@@ -65,6 +70,7 @@ public class CommentJSONParse {
             iyayo = chat_JsonObject.getString("anonymity");
             mail = chat_JsonObject.getString("mail");
             date = chat_JsonObject.getString("date");
+            commentNumber =chat_JsonObject.getString("no");
             //プレ垢・運営コメ・一般コメ
             if (!chat_JsonObject.isNull("premium")) {
                 if (chat_JsonObject.getInt("premium") == 1) {

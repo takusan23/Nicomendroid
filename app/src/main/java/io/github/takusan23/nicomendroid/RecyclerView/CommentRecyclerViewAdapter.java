@@ -36,7 +36,7 @@ public class CommentRecyclerViewAdapter extends RecyclerView.Adapter<CommentRecy
 
     public CommentRecyclerViewAdapter(ArrayList<ArrayList> arrayList, String mode) {
         this.itemList = arrayList;
-       this.mode=mode;
+        this.mode = mode;
     }
 
     @NonNull
@@ -58,7 +58,7 @@ public class CommentRecyclerViewAdapter extends RecyclerView.Adapter<CommentRecy
         } else if (mode.contains("comment")) {
             CommentJSONParse api = new CommentJSONParse(viewHolder.text_TextView.getContext(), item.get(0));
             viewHolder.username_TextView.setText(api.getPremium() + "\n" + api.getUserId());
-            viewHolder.text_TextView.setText(api.getText());
+            viewHolder.text_TextView.setText(api.getCommentNumber() + "\n" + api.getText());
         }
     }
 

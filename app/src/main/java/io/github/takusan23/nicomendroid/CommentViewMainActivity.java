@@ -18,6 +18,7 @@ import android.view.MenuItem;
 
 import io.github.takusan23.nicomendroid.Fragment.CommentFragment;
 import io.github.takusan23.nicomendroid.Fragment.GiftFragment;
+import io.github.takusan23.nicomendroid.Fragment.LicenseFragment;
 
 public class CommentViewMainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -80,8 +81,10 @@ public class CommentViewMainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (id) {
+            case R.id.menu_license:
+                rePlaceFragment(new LicenseFragment());
+                break;
         }
 
         return super.onOptionsItemSelected(item);

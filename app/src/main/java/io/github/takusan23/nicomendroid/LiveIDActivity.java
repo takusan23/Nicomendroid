@@ -109,7 +109,7 @@ public class LiveIDActivity extends AppCompatActivity {
      */
     private void getClickBordLiveID() {
         ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-        if (clipboard.getPrimaryClip()!=null){
+        if (clipboard.getPrimaryClip() != null) {
             ClipData.Item item = clipboard.getPrimaryClip().getItemAt(0);
             String pasteData = item.getText().toString();
             //正規表現で生放送IDを取る

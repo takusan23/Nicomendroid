@@ -22,4 +22,5 @@
     <string name="management">Management</string>
     <string name="id_activity">Broadcast ID Input</string>
     <string name="gift">Gift History</string>
+    <string name="license">License</string>
 </resources>
