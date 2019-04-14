@@ -23,4 +23,7 @@
     <string name="id_activity">Broadcast ID Input</string>
     <string name="gift">Gift History</string>
     <string name="license">License</string>
+    <string name="menu_toast">Display toast</string>
+    <string name="menu_tts">Use reading (TTS)</string>
+    <string name="tts_ok">TTS ready</string>
 </resources>

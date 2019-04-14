@@ -14,4 +14,7 @@
     <string name="id_activity">生放送ID入力</string>
     <string name="gift">ギフト履歴</string>
     <string name="license">ライセンス</string>
+    <string name="menu_tts">読み上げ（TTS）を利用する</string>
+    <string name="menu_toast">Toastを表示させる</string>
+    <string name="tts_ok">TTSの準備完了</string>
 </resources>

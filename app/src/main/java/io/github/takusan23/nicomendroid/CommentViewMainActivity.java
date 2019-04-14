@@ -25,6 +25,8 @@ public class CommentViewMainActivity extends AppCompatActivity
 
     private Toolbar toolbar;
     private static String liveId;
+    public static boolean isShowToast = false;
+    public static boolean isTTS = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +86,26 @@ public class CommentViewMainActivity extends AppCompatActivity
         switch (id) {
             case R.id.menu_license:
                 rePlaceFragment(new LicenseFragment());
+                break;
+            case R.id.menu_toast:
+                //チェック
+                if (!item.isChecked()){
+                    isShowToast = true;
+                    item.setChecked(true);
+                }else {
+                    isShowToast = false;
+                    item.setChecked(false);
+                }
+                break;
+            case R.id.menu_tts:
+                //チェック
+                if (!item.isChecked()){
+                    isTTS = true;
+                    item.setChecked(true);
+                }else {
+                    isTTS = false;
+                    item.setChecked(false);
+                }
                 break;
         }
 

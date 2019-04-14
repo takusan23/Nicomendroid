@@ -1,17 +1,20 @@
 package io.github.takusan23.nicomendroid.RecyclerView;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.w3c.dom.Text;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
+import io.github.takusan23.nicomendroid.CommentViewMainActivity;
 import io.github.takusan23.nicomendroid.Fragment.GiftFragment;
 import io.github.takusan23.nicomendroid.JSONParse.CommentJSONParse;
 import io.github.takusan23.nicomendroid.JSONParse.GiftJSONParse;
@@ -66,5 +69,8 @@ public class CommentRecyclerViewAdapter extends RecyclerView.Adapter<CommentRecy
     public int getItemCount() {
         return itemList.size();
     }
+
+
+
 
 }

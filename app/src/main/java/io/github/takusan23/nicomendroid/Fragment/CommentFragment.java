@@ -1,8 +1,10 @@
 package io.github.takusan23.nicomendroid.Fragment;
 
 
+import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
@@ -40,6 +42,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import io.github.takusan23.nicomendroid.CommentViewMainActivity;
+import io.github.takusan23.nicomendroid.JSONParse.CommentJSONParse;
 import io.github.takusan23.nicomendroid.JSONParse.LiveInfoJSONParse;
 import io.github.takusan23.nicomendroid.R;
 import io.github.takusan23.nicomendroid.RecyclerView.CommentRecyclerViewAdapter;
@@ -57,6 +60,7 @@ public class CommentFragment extends Fragment {
     private RecyclerView.LayoutManager recyclerViewLayoutManager;
     private boolean one_mode = false;
     private LiveInfoJSONParse api;
+    private TextToSpeech tts;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -77,7 +81,7 @@ public class CommentFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(mLayoutManager);
-        CommentRecyclerViewAdapter customMenuRecyclerViewAdapter = new CommentRecyclerViewAdapter(recyclerViewList,"comment");
+        CommentRecyclerViewAdapter customMenuRecyclerViewAdapter = new CommentRecyclerViewAdapter(recyclerViewList, "comment");
         recyclerView.setAdapter(customMenuRecyclerViewAdapter);
         recyclerViewLayoutManager = recyclerView.getLayoutManager();
         api = new LiveInfoJSONParse(getArguments().getString("response"));
@@ -132,6 +136,7 @@ public class CommentFragment extends Fragment {
                 @Override
                 public void onMessage(String message) {
                     //はじめだけ過去コメが流れてくるのでパース
+                    snackberProgress.dismissSnackberProgress();
                     if (!one_mode) {
                         //ここ一度だけ動く
                         one_mode = true;
@@ -153,6 +158,35 @@ public class CommentFragment extends Fragment {
                         ArrayList<String> item = new ArrayList<>();
                         item.add(message);
                         recyclerViewList.add(0, item);
+                        CommentJSONParse api = new CommentJSONParse(getContext(), message);
+                        //Toast
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (CommentViewMainActivity.isShowToast) {
+                                    showToast(api);
+                                }
+                                //TTS
+                                if (CommentViewMainActivity.isTTS) {
+                                    //TTSのインスタンス生成
+                                    if (tts== null) {
+                                        tts = new TextToSpeech(getContext(), new TextToSpeech.OnInitListener() {
+                                            @Override
+                                            public void onInit(int status) {
+                                                if (TextToSpeech.SUCCESS == status) {
+                                                    //初期化完了
+                                                    Toast.makeText(getContext(), getString(R.string.tts_ok), Toast.LENGTH_SHORT).show();
+                                                }
+                                            }
+                                        });
+                                    } else {
+                                        tts.setSpeechRate(2);
+                                        tts.speak(api.getText(), TextToSpeech.QUEUE_ADD, null, null);
+                                    }
+                                }
+                            }
+                        });
+
                     }
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
@@ -164,7 +198,7 @@ public class CommentFragment extends Fragment {
                                 if (((LinearLayoutManager) recyclerViewLayoutManager).getChildCount() > 0) {
                                     top = ((LinearLayoutManager) recyclerViewLayoutManager).getChildAt(0).getTop();
                                 }
-                                CommentRecyclerViewAdapter customMenuRecyclerViewAdapter = new CommentRecyclerViewAdapter(recyclerViewList,"comment");
+                                CommentRecyclerViewAdapter customMenuRecyclerViewAdapter = new CommentRecyclerViewAdapter(recyclerViewList, "comment");
                                 recyclerView.setAdapter(customMenuRecyclerViewAdapter);
                                 //一番上なら追いかける
                                 if (pos == 0) {
@@ -186,8 +220,13 @@ public class CommentFragment extends Fragment {
                 public void onClose(int code, String reason, boolean remote) {
                     System.out.println("おわり");
                     if (getActivity() != null) {
-                        Toast.makeText(getContext(), getString(R.string.end), Toast.LENGTH_LONG).show();
-                        snackberProgress.dismissSnackberProgress();
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(getContext(), getString(R.string.end), Toast.LENGTH_LONG).show();
+                                snackberProgress.dismissSnackberProgress();
+                            }
+                        });
                     }
                 }
 
@@ -196,8 +235,13 @@ public class CommentFragment extends Fragment {
                     System.out.println("えらー");
                     ex.printStackTrace();
                     if (getActivity() != null) {
-                        Toast.makeText(getContext(), getString(R.string.error), Toast.LENGTH_LONG).show();
-                        snackberProgress.dismissSnackberProgress();
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(getContext(), getString(R.string.error), Toast.LENGTH_LONG).show();
+                                snackberProgress.dismissSnackberProgress();
+                            }
+                        });
                     }
                 }
             };
@@ -245,7 +289,7 @@ public class CommentFragment extends Fragment {
         //追加
         Glide.with(navHeaderView).load(api.getThumbnailUrl()).into(back_ImageView);
         //Glide.with(navHeaderView).load(api.getThumbnailUrl()).into(icon_ImageView);
-        description_TextView.setText(Html.fromHtml(api.getDescription(),Html.FROM_HTML_MODE_COMPACT));
+        description_TextView.setText(Html.fromHtml(api.getDescription(), Html.FROM_HTML_MODE_COMPACT));
         viewer_count_TextView.setText(" : " + api.getViewers());
         comment_count_TextView.setText(" : " + api.getComments());
     }
@@ -258,5 +302,20 @@ public class CommentFragment extends Fragment {
         if (webSocketClient != null) {
             webSocketClient.close();
         }
+        //TTS終了
+        if (tts != null) {
+            tts.shutdown();
+        }
+    }
+
+    private void showToast(CommentJSONParse api) {
+        //Toastだすか
+        if (CommentViewMainActivity.isShowToast) {
+            Toast.makeText(getContext(), api.getPremium() + "\n" + api.getText(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void startTTS(Context context, CommentJSONParse api) {
+
     }
 }
