@@ -180,10 +180,12 @@ public class CommentFragment extends Fragment {
                                             }
                                         });
                                     } else {
+                                        //しゃべる
                                         tts.setSpeechRate(2);
                                         tts.speak(api.getText(), TextToSpeech.QUEUE_ADD, null, null);
                                     }
                                 } else {
+                                    //とじる
                                     if (tts != null) {
                                         tts.stop();
                                     }
