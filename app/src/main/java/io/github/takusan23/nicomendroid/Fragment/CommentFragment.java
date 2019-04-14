@@ -169,7 +169,7 @@ public class CommentFragment extends Fragment {
                                 //TTS
                                 if (CommentViewMainActivity.isTTS) {
                                     //TTSのインスタンス生成
-                                    if (tts== null) {
+                                    if (tts == null) {
                                         tts = new TextToSpeech(getContext(), new TextToSpeech.OnInitListener() {
                                             @Override
                                             public void onInit(int status) {
@@ -182,6 +182,10 @@ public class CommentFragment extends Fragment {
                                     } else {
                                         tts.setSpeechRate(2);
                                         tts.speak(api.getText(), TextToSpeech.QUEUE_ADD, null, null);
+                                    }
+                                } else {
+                                    if (tts != null) {
+                                        tts.stop();
                                     }
                                 }
                             }
